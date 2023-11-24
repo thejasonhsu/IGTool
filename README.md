@@ -1,4 +1,4 @@
-# instagram-insights
+# IG Insights
 Discover various insights from your Instagram data.
 
 [![quality](https://github.com/cecobask/instagram-insights/actions/workflows/quality.yaml/badge.svg)](https://github.com/cecobask/instagram-insights/actions/workflows/quality.yaml)
