@@ -39,7 +39,6 @@ Instagram data archive publicly accessible:
   - Select role `Viewer`
   - Use the `Copy link` button to copy the public link to your archive
 - [ ] Set up your repository
-  - Fork the [cecobask/instagram-insights](https://github.com/cecobask/instagram-insights) repository to your account
   - Enable the `insights` workflow ([help](https://docs.github.com/en/actions/using-workflows/disabling-and-enabling-a-workflow))
   - Create a new repository secret ([help](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository)):
     - Name: `ARCHIVE_URL`
