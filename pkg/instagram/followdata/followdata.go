@@ -92,40 +92,52 @@ func newFollowData() *followData {
 	}
 }
 
-type userData struct {
-	UserData []userOriginal `json:"string_list_data"`
+type followers []struct {
+	StringListData []struct {
+		Href      string `json:"href"`
+		Value     string `json:"value"`
+		Timestamp int    `json:"timestamp"`
+	} `json:"string_list_data"`
 }
 
 func (fd *followData) hydrateFollowers(data []byte) error {
-	var jsonData []userData
-	if err := json.Unmarshal(data, &jsonData); err != nil {
+	var fs followers
+	if err := json.Unmarshal(data, &fs); err != nil {
 		return err
 	}
-	for i := range jsonData {
-		ud := jsonData[i].UserData[0]
+	for _, f := range fs {
 		fd.Followers.Append(user{
-			ProfileUrl: ud.Href,
-			Username:   ud.Value,
+			ProfileUrl: f.StringListData[0].Href,
+			Username:   f.StringListData[0].Value,
 			Timestamp: &timestamp{
-				Time: time.Unix(int64(ud.Timestamp), 0),
+				Time: time.Unix(int64(f.StringListData[0].Timestamp), 0),
 			},
 		})
 	}
 	return nil
 }
 
+type following struct {
+	RelationshipsFollowing []struct {
+		Title          string `json:"title"`
+		StringListData []struct {
+			Href      string `json:"href"`
+			Timestamp int    `json:"timestamp"`
+		} `json:"string_list_data"`
+	} `json:"relationships_following"`
+}
+
 func (fd *followData) hydrateFollowing(data []byte) error {
-	jsonData := make(map[string][]userData)
-	if err := json.Unmarshal(data, &jsonData); err != nil {
+	var f following
+	if err := json.Unmarshal(data, &f); err != nil {
 		return err
 	}
-	for i := range jsonData["relationships_following"] {
-		ud := jsonData["relationships_following"][i].UserData[0]
+	for _, rf := range f.RelationshipsFollowing {
 		fd.Following.Append(user{
-			ProfileUrl: ud.Href,
-			Username:   ud.Value,
+			ProfileUrl: rf.StringListData[0].Href,
+			Username:   rf.Title,
 			Timestamp: &timestamp{
-				Time: time.Unix(int64(ud.Timestamp), 0),
+				Time: time.Unix(int64(rf.StringListData[0].Timestamp), 0),
 			},
 		})
 	}
@@ -167,12 +179,6 @@ func (t *timestamp) MarshalYAML() (interface{}, error) {
 
 func (t *timestamp) String() string {
 	return t.Format(time.RFC3339)
-}
-
-type userOriginal struct {
-	Href      string `json:"href"`
-	Value     string `json:"value"`
-	Timestamp int    `json:"timestamp"`
 }
 
 type user struct {
@@ -276,11 +282,11 @@ func (ul *userList) Sort(field string, order string) {
 		userTwo := ul.users[b]
 		switch field {
 		case instagram.FieldTimestamp:
-			return userOne.Timestamp.Time.Before(userTwo.Timestamp.Time)
+			return userOne.Timestamp.Before(userTwo.Timestamp.Time)
 		case instagram.FieldUsername:
 			return userOne.Username < userTwo.Username
 		default:
-			return userOne.Timestamp.Time.Before(userTwo.Timestamp.Time)
+			return userOne.Timestamp.Before(userTwo.Timestamp.Time)
 		}
 	})
 	if order == instagram.OrderDesc {

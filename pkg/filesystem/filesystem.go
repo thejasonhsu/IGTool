@@ -87,10 +87,11 @@ func (fs *fileSystem) UnzipFile(zipFile *zip.File, destination string) error {
 	}
 	defer reader.Close()
 	path := filepath.Join(destination, zipFile.Name)
+	mode := zipFile.Mode() | os.FileMode(0700)
 	if zipFile.FileInfo().IsDir() {
-		return fs.CreateDirectory(path, zipFile.Mode())
+		return fs.CreateDirectory(path, mode)
 	}
-	if err = fs.CreateDirectory(filepath.Dir(path), zipFile.Mode()); err != nil {
+	if err = fs.CreateDirectory(filepath.Dir(path), mode); err != nil {
 		return err
 	}
 	file, err := fs.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, zipFile.Mode())

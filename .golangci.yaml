@@ -1,21 +1,31 @@
+version: "2"
 linters:
   enable:
-    - errcheck
-    - gosimple
-    - govet
-    - ineffassign
-    - staticcheck
-    - unused
-    - goimports
-    - misspell
-    - revive
-    - unconvert
-    - gci
-run:
-  timeout: 5m
-linters-settings:
-  revive:
-    rules:
+  - errcheck
+  - govet
+  - ineffassign
+  - staticcheck
+  - unused
+  - misspell
+  - revive
+  - unconvert
+  settings:
+    revive:
+      rules:
       - name: var-naming
         arguments:
-          - ["ID", "URL", "HTTP", "JSON"]
+        - [ "ID", "URL", "HTTP", "JSON" ]
+    errcheck:
+      exclude-functions:
+      - (io.ReadCloser).Close
+      - (io.WriteCloser).Close
+      - (*archive/zip.ReadCloser).Close
+      - (*os.File).Close
+formatters:
+  settings:
+    gci:
+      sections:
+      - standard
+      - default
+      - prefix(github.com/cecobask/imdb-trakt-sync)
+      custom-order: true

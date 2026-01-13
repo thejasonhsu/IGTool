@@ -2,7 +2,7 @@ name: quality
 on:
   push:
     branches:
-      - main
+    - main
   pull_request:
 permissions:
   contents: read
@@ -10,41 +10,41 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 1.21
-      - name: Lint
-        uses: golangci/golangci-lint-action@v4
-        with:
-          version: v1.54.2
-          skip-cache: true
+    - name: Check out code
+      uses: actions/checkout@v4
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: 1.24.4
+    - name: Lint
+      uses: golangci/golangci-lint-action@v7
+      with:
+        version: v2.1.6
+        skip-cache: true
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 1.21
-      - name: Build
-        run: make build
+    - name: Check out code
+      uses: actions/checkout@v4
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: 1.24.4
+    - name: Build
+      run: make build
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 1.21
-      - name: Run tests
-        run: make test
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
-        with:
-          files: coverage.out
-          token: ${{ secrets.CODECOV_TOKEN }}
+    - name: Check out code
+      uses: actions/checkout@v4
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: 1.24.4
+    - name: Run tests
+      run: make test
+    - name: Upload coverage
+      uses: codecov/codecov-action@v5
+      with:
+        files: coverage.out
+        token: ${{ secrets.CODECOV_TOKEN }}
